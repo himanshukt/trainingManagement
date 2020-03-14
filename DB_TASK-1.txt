@@ -1,0 +1,541 @@
+
+
+1-Display the last day of the next month?
+
+SQL> SELECT TO_CHAR(LAST_DAY(ADD_MONTHS(SYSDATE,1)),'DAY') FROM DUAL;
+
+2-display the last day of the year and day name?
+
+
+SQL> SELECT TO_CHAR(LAST_DAY(ADD_MONTHS(SYSDATE,6)),'DD/MM/YYYY')||TO_CHAR(LAST_DAY(ADD_MONTHS(SYSDATE,6)),'DAY') FROM DUAL;
+
+3-ADD 4 YEAR 5 MONTH 6 DAY TO THE SYSTEMDATE?
+
+SQL>SELECT TO_CHAR(ADD_MONTHS(SYSDATE,5),'MM')||'/'|| TO_CHAR(NEXT_DAY(SYSDATE,6),'DD')|| '/'|| TO_CHAR(ADD_MONTHS(SYSDATE,53),'YYYY') FROM DUAL;
+
+4-DISPLAY ALL FRIDAY OF THE CURRENT MONTH?
+
+
+
+5- DISPLAY EXACT AGE ;
+
+
+
+STRING QUERY--------
+1-DISPLAY THE LAST OCCURENCE OF GIVEN CHAR 'SRAVANI' LAST OCC OF 'A' IS 5??
+
+ select 'sravani' ,
+   case when
+   instr('sravani','a')>0 then
+   instr('sravani' ,'a',instr('sravani','a')+1)
+    else
+   0
+  end "lastocc" from dual;
+
+2-DISPLAY ALL THE NAME OF EMP TABLE IS AS FIRST CHAR CAPITAL?
+
+SQL> SELECT CONCAT(UPPER(SUBSTR(ENAME,1,1)) ,LOWER(SUBSTR(ENAME,2))) FROM EMP;
+
+3-TAKE FULL NAME AS HIMANSHUKUMAR' SPLIT IN FIRSTNAME AND LASTNAME?
+
+SQL> SELECT 'HIMANSHU KUMAR' , SUBSTR('HIMANSHU KUMAR',1,INSTR('HIMANSHU KUMAR',' ')) "FIRSTNAME" ,
+  2  SUBSTR('HIMANSHU KUMAR',INSTR('HIMANSHU KUMAR',' ')+1) "LASTNAME" FROM DUAL;
+
+4-IN WORD MISISSIPI COUNT NO OF i's?
+
+SQL> select 'misissipi' ,length('misissipi')-length(replace('misissipi','i','')) from dual;
+
+5-PRINT NO OF WORD 'SAKSHI NAGARIYA' ?
+
+SQL> SELECT ENAME , LENGTH(ENAME)-LENGTH(REPLACE(ENAME,' ', ''))+1 FROM EMP;
+
+6->PRINT NAME FROM EMPLOY WHERE FIRST AND LAST CHARACTER IS SAME
+SQL>SELECT NAME FROM EMPLOY WHERE UPPER(SUBSTR(NAME,1,1))=UPPER(SUBSTR(NAME,-1,1));
+
+7- DISPLAY ALL NAME WHOSE FIRST 2 PART START WITH SAME CHAR?
+
+SQL>SELECT ENAME FROM EMP WHERE UPPER(SUBSTR(ENAME,0,1))=UPPER(SUBSTR(NAME,INSTR(NAME,' ')+1,1)) AND INSTR(NAME,' ')>0;
+
+
+LECTURE-----
+
+                           ------------------------------join-----------------------
+
+1-select dept.deptno,dname,empno,ename,sal,job from dept,emp where dept.deptno=emp.deptno;
+
+2- select dept.deptno,dname,empno,ename,sal,job from dept inner join emp on dept.deptno=emp.deptno;
+
+3-  select D.deptno,dname,empno,ename,sal,job from dept D inner join emp E on D.deptno=E.deptno;
+
+4- select D.deptno,dname,empno,ename,sal,job from dept D left join emp E on D.deptno=E.deptno;
+
+5- select Dd.deptno,
+Dd.dname,
+Ed.ename,
+Ed.sal,
+Ed.empno,
+ from
+ (select deptno,dname,loc from dept)Dd
+ ,(select empno, ename,sal,deptno from emp) Ed
+   where Dd.deptno=Ed.deptno;
+
+6-  select Dd.deptno,
+Dd.dname,
+Ed.ename,
+Ed.sal,
+Ed.empno,
+Ed.Inscsal
+ from
+ (select deptno,dname,loc from dept)Dd
+ ,(select empno, ename,sal,deptno,sal+1000 Incsal from emp) Ed
+   where Dd.deptno=Ed.deptno and Ed.Incsal>3000;
+
+7-
+PRINT 0 UNMARRIED AND OTHERWISE MARRIED
+
+SQL>SELECT MARITALSTATUS,
+  2  CASE MARITALSTATUS
+  3  WHEN 0 THEN 'UNMARRIED'
+  4  ELSE
+  5  'MARRIED'
+  6  END "STATUS"
+  7  FROM AGENT;
+
+8-   ------------------INNE JOIN ----------------------------
+
+
+ select A.AGENTID,FIRSTNAME,LASTNAME,CITY,SSN,
+  2  P.POLICYID,ANNUALPREMIUM,MODALPREMIUM
+  3  FROM
+  4  AGENT A INNER JOIN AGENTPOLICY AP
+  5  ON A.AGENTID=AP.AGENTID
+  6  INNER JOIN POLICY P ON
+  7  P.POLICYID=AP.POLICYID;
+
+9-
+
+----------------FULL JOIN------------------
+
+
+DISPLAY ALL MATCHING AND UNMATCHING RECORD FROM BOTH THE TABLES.
+
+SELECT A.AGENTID,FIRSTNAME,LASTNAME,CITY,SSN,P.POLICYID,ANNUALPREMIUM,MODALPREMIUM
+FROM
+AGENT A FULL JOIN AGENTPOLICY AP
+ON A.AGENTID=AP.AGENTID
+FULL JOIN POLICY P ON 
+P.POLICYID=AP.POLICYID;
+
+10- ---------------------------RIGHT JOIN----------------------
+
+
+SELECT A.AGENTID,FIRSTNAME,LASTNAME,CITY,SSN,P.POLICYID,ANNUALPREMIUM,MODALPREMIUM
+FROM
+AGENT A RIGHT JOIN AGENTPOLICY AP
+ON A.AGENTID=AP.AGENTID
+RIGHT JOIN POLICY P ON 
+P.POLICYID=AP.POLICYID;
+
+11-------------------------------CROSS JOIN-------------------------
+
+SELECT * FROM DEPT CROSS JOIN AMP;
+
+SELET * FROM AGENT CROSS JOIN AGENTPOLICY;
+SELECT * FROM POLICY CROSS JOIN AGENTPOLICY;
+
+12- -------------------------------LEFT JOIN---------------------------------- 
+
+
+ SELECT A.AGENTID,FIRSTNAME,LASTNAME,CITY,SSN,P.POLICYID,ANNUALPREMIUM,MODALPREMIUM
+  2  FROM
+  3  AGENT A LEFT JOIN AGENTPOLICY AP
+  4  ON A.AGENTID=AP.AGENTID
+  5  LEFT JOIN POLICY P ON
+  6  P.POLICYID=AP.POLICYID;
+
+13 - -------------------------------INNER JOIN-----------------------------
+
+ SELECT E1.EMPNO "MGRNO" ,E1.ENAME "MGR",E2.EMPNO "EMPNO",E2.ENAME "EMP"
+ FROM EMP E1 INNER JOIN EMP E2 ON E1.EMPNO=E2.MGR
+ORDER BY E1.ENAME;
+
+
+
+15- ---------------------------UNION AND UNION ALL--------------------------
+
+A-SELECT EMPNO,ENAME,SAL FROM EMP WHERE SAL BETWEEN 1000 AND 3000
+UNION 
+SELECT EMPNO,ENAME,SAL FROM EMP
+WHERE SAL BETWEEN 2000 AND 4000;
+
+
+
+B-SELECT EMPNO,ENAME,SAL FROM EMP WHERE SAL BETWEEN 1000 AND 3000
+UNION ALL
+SELECT EMPNO,ENAME,SAL FROM EMP
+WHERE SAL BETWEEN 2000 AND 4000;
+
+C-
+SELECT EMPNO,ENAME,SAL FROM EMP WHERE SAL BETWEEN 1000 AND 3000
+INTERSECT
+SELECT EMPNO,ENAME,SAL FROM EMP
+WHERE SAL BETWEEN 2000 AND 4000;
+
+D-
+SELECT EMPNO,ENAME,SAL FROM EMP WHERE SAL BETWEEN 1000 AND 3000
+MINUS
+SELECT EMPNO,ENAME,SAL FROM EMP
+WHERE SAL BETWEEN 2000 AND 4000;
+
+E-SELECT AGENTID FROM AGENT 
+UNION
+SELECT AGENTID FROM AGENTPOLICY;
+
+F-
+SELECT AGENTID FROM AGENT 
+UNION ALL
+SELECT AGENTID FROM AGENTPOLICY;
+
+G-
+SELECT AGENTID FROM AGENT 
+INTERSECT
+SELECT AGENTID FROM AGENTPOLICY;
+
+H-
+SELECT AGENTID FROM AGENT 
+MINUS
+SELECT AGENTID FROM AGENTPOLICY;
+
+
+
+------------------------------SUBQUERY-----------------------------
+
+SOMETIMES, IT IS NOT POSSIBLE TO EXTRACT DATA BY USING SINGLE SELECT STATEMENT, TO OVERCOME THIS WE NEED THE HELP OF SUBQUERY.A SUBQUERY IS A QUERY, THAT
+WHICH IS HAVING ANOTHER QUERY INSIDE,THE QUERY WHICH IS INSIDE KNOWN AS INNER QUERY,THE QUERY WHICH IS OUTSIDE NOWN AS OUTER QUERY. EVERY TIME THE 
+RESULT OF INNER QUERY WILL BE SEND AN INPUT TO THE OUTER QUERY.
+
+
+
+Q- DISPLAY THE NAME OF PERSON WHO IS GETTING MAXIMUM  SALARY?(WITHOUT SUBQUERY)
+
+
+ SELECT ENAME FROM EMP WHERE SAL=(SELECT MAX(SAL) FROM EMP WHERE SAL=(SELECT MAX(SAL) FROM EMP));
+
+SECOND MAX SALARY---
+
+ SELECT ENAME FROM EMP WHERE SAL=(SELECT MAX(SAL) FROM EMP WHERE SAL<(SELECT MAX(SAL) FROM EMP));
+
+
+
+--->DISPLAY THE IDLE AGENTS---
+
+
+SELECT * FROM AGENT WHERE AGENTID <>
+   (SELECT AGENTID FROM AGENTPOLICY);(ERROR)
+
+BECOUSE
+IF SUBQUERY RETURNS MORE THEN ONE VALUE, THEN WE HAV TO USE EITHER ALL OR ANY
+
+SELECT * FROM AGENT WHERE AGENTID <>
+   ALL (SELECT AGENTID FROM AGENTPOLICY);
+
+
+------------------------------------TYPES OF COMMAND-------------------
+
+THERE ARE DIFFRENT TYPE OF COMMAND AS-
+
+1-DDL(DATA DIFINITION LANGUAGE)
+
+CREATE,ALTER,DROP,TRUNCATE
+
+2-DML(DATA MANUPULATION LANGUAGE)
+
+INSERT,UPDATE,DELETE
+
+3-DCL(DATA CONTROL LANGUAGE)
+
+REVOKE,SAVEPOINT
+
+
+------DDL---------
+
+EG-
+
+CREATE TABLE EMPLOYNEW
+(
+ EMPNO NUMBER,
+NAME VARCHAR2(5),
+GENDER VARCHAR2(10),
+DEPT VARCHAR2(30),
+DESIGN VARCHAR2(30),
+BASIC NUMBER(9,2)
+);
+
+
+
+ 
+DROP TABLE EMPLOYNEW;
+
+APPLY KEY-------------USE CONSTRAINT----------------------------
+
+CREATE TABLE EMPLOYNEW
+(
+ EMPNO NUMBER CONSTRAINT PK_EMPLOYNEW_EMPNO PRIMARY KEY,
+NAME VARCHAR2(30) NOT NULL,
+GENDER VARCHAR2(10) CONSTRAINT CHK_EMPLOYNEW_GENDER
+CHECK(GENDER IN('MALE','FEMALE')),
+DEPT VARCHAR2(30) CONSTRAINT CHK_EMPLOYNEW_DEPT
+CHECK(DEPT IN('DOTNET','JAVA','TESTING')),
+DESIG VARCHAR2(30) CONSTRAINT CHK_EMPLOYENEW_DESIG
+CHECK(DESIG IN('SWE','TEAMLEAD','MANAGER')),
+BASIC NUMBER(9,2) CONSTRAINT CHK_EMPLOYENEW_BASIC
+CHECK(BASIC BETWEEN 1000 AND 9000)
+);
+
+-------------------------------------USE REFRENCES-----------------------------------
+
+CREATE TABLE LEAVE
+(
+LEAVENO NUMBER CONSTRAINT PK_LEAVENO PRIMARY KEY,
+EMPNO NUMBER
+CONSTRAINT FK_LEAVE_EMPNO REFERENCES EMPLOYNEW(EMPNO),
+LAVAIL NUMBER,
+LTAKEN NUMBER,
+LOP NUMBER
+);
+INSERT INTO LEAVE(LEAVENO,EMPNO,LAVAIL,LTAKEN) 
+VALUES(1,1,2,3);
+
+
+CREATE TABLE EMPLOYNEW
+(
+ EMPNO NUMBER,
+NAME VARCHAR2(5),
+GENDER VARCHAR2(10),
+DEPT VARCHAR2(30),
+DESIGN VARCHAR2(30),
+BASIC NUMBER(9,2),
+INSERTEDON DATE,
+INSERTEDBY VARCHAR(10)
+);
+
+
+
+/* MODIFY NAME FIELD TO VARCHAR(30)
+ALTER TABLE EMPLOYENEW
+MODIFY NAME VARCHAR2(30)
+
+/* ADD PRIMARY KEYON EMPNO FIELD */
+
+ALTER TABLE EMPLOYENEW
+ADD CONSTRAINT PK_EMPLOYENEW_EMPNO PRIMARY KEY(EMPNO);
+
+
+/* ADD CHECK CONSTRAINT FOR GENDER
+
+ALTER TABLE EMPLOYEENEW
+ADD CONSTRAINT CHK_EMPLOYENEW_GENDER
+CHECK(GENDER IN('MALE','FEMALE'));
+
+
+/* DROP INSERTEDON FIELD
+
+ALTER TABLE EMPLOYNEW
+DROP COLUMN INSERTEDON;
+
+
+/* DROP INSERTEDBY FIELD   */
+
+ALTER TABLE EMPLOYNEW
+DROP COLUMN INSERTEDBY;
+
+/*   CREATE FOREIGN KEY CONSTRAINT  */
+
+ALTER TABLE LEAVE
+ADD CONSTRAINT FK_LEAVE_EMPNO
+FOREIGN KEY(EMPNO)
+REFRENCES EMPLOYNEW(EMPNO);
+
+
+
+
+--------------------------------------------------------------TASK --2-------------------------------------------------------------------------------------------------------------------------
+
+EXERCISE
+
+
+
+CREATE TABLE COURSES
+  (
+    CCODE VARCHAR2(5) CONSTRAINT PK_CCODE PRIMARY KEY,
+    NAME VARCHAR(30) CONSTRAINT COURSES_NAME UNIQUE,
+    DURATION NUMBER(3)  CONSTRAINT CH_COURSES_DURATION CHECK(DURATION>=1),
+    FEE NUMBER(5)  CONSTRAINT CH_COURSES_FEE  CHECK(FEE>=0),
+    PREREQUISITE VARCHAR2(100)
+    );
+
+
+
+CREATE TABLE FACULTY
+(
+
+ FACCODE VARCHAR2(5) CONSTRAINT PK_FACCODE PRIMARY KEY,
+ FNAME VARCHAR2(30),
+ QUAL VARCHAR2(30),
+ EXP VARCHAR2(100)
+);
+
+
+
+
+
+
+
+create table  course_faculty
+(
+   faccode   varchar2(5) constraint course_faculty_fcode_fk 
+references faculty(faccode),
+   CCODE   Varchar2(5) constraint course_faculty_ccode_fk 
+references courses(ccode),
+   grade   char(1)  constraint course_faculty_grade_chk
+                           check ( upper(grade) in ('A','B','C') ),
+   constraint course_faculty_pk  primary key(ccode,faccode)
+);
+
+
+
+
+
+CREATE TABLE Batches
+(
+ BCODE VARCHAR2(5)  PRIMARY KEY,
+ CCODE VARCHAR2(5)  CONSTRAINT FK_BATCHES_CCODE
+REFERENCES COURSES(CCODE),
+FACCODE	
+VARCHAR2(5) CONSTRAINT FK_BATCHES_FACCODE
+REFERENCES FACULTY(FACCODE),
+STDATE DATE ,
+ENDDATE	
+DATE,
+TIMING NUMBER(1) CONSTRAINT CH_BATCHES_TIMING
+CHECK(TIMING IN(1,2,3)),
+CONSTRAINT CH_BATCHES_STDATA  CHECK(STDATE<ENDDATE)
+);
+
+
+
+
+
+CREATE TABLE STUDENTS
+(
+ ROLLNO
+	NUMBER(5) CONSTRAINT PK_STUDENTS_ROLLNO PRIMARY KEY,
+ BCODE VARCHAR2(5) CONSTRAINT FK_STUDENTS_BCODE
+ REFERENCES BATCHES(BCODE),
+SNAME VARCHAR2(30) NOT NULL,
+GENDER CHAR(1) CONSTRAINT STUDENTS_GENDER CHECK(GENDER IN('m','f')),
+    DJ 	DATE,
+PHONE VARCHAR2(10),
+EMAIL VARCHAR2(30)
+);
+
+
+
+CREATE TABLE PAYMENTS
+(
+ ROLLNO	
+NUMBER(5) CONSTRAINT FK_PAYMENT_ROOLNO 
+REFERENCES STUDENTS(ROLLNO),
+DP DATE NOT NULL,
+AMOUNT NUMBER(5)
+,CONSTRAINT PK_PAYMENTS PRIMARY KEY(ROLLNO ,DP)
+);
+
+
+
+---------------------------------------------------------------------------------------------------
+
+RECORD INSERT COURSEC
+
+insert into courses values('ora','Oracle database',25,4500,'Windows');
+
+insert into courses values('vbnet','VB.NET',30,5500,'Windows and 
+programming');
+
+insert into courses values('c','C programming',20,3500,'Computer Awareness');
+
+insert into courses values('asp','ASP.NET',25,5000,'Internet and programming');
+
+insert into courses values('java','Java Language',25,4500,'C language');
+
+insert into courses values('xml','XML Programming', 15, 4000, 'HTML,Scripting, ASP/JSP');
+
+              EXERCISE---                                       
+
+1- Apply Inner Join on Batches and Courses Table?
+
+select courses.ccode,name,duration,fee,PREREQUISITE from batches inner join courses on batches.ccode=courses.ccode; 
+
+2-Display all records from Courses and Batches where enddate is not null ?
+
+select courses.ccode,name,duration,fee,prerequisite,batches.bcode,stdate,enddate,timing from courses inner join batches on courses.ccode=batches.ccode where enddate is not null;
+
+3-  Display Inner Join/Right outer join from Batches, Courses and Faculty Table??
+
+ select * from batches inner join courses on batches.ccode=courses.ccode right join faculty on faculty.faccode=batches.faccode;
+
+EXCERCISE--
+
+6-Display rollno, student name, pay date and amount paid??
+
+select students.rollno,sname,payments.dp,amount from students inner join payments on students.roollno=payments.rollno;
+
+7-Display rollno , student name, batch code ,  stdate of batch  and faculty code.
+
+SELECT STUDENTS.ROLLNO,SNAME,BATCHES.BCODE,STDATE 
+FROM STUDENTS INNER JOIN BATCHES ON STUDENTS.BCODE=BATCHES.BCODE
+ INNER JOIN FACULTY ON BATCHES.FACCODE=FACULTY.FACCODE;
+
+8-Display rollno , student name, course name  ,  stdate  of batch  and faculty code.??
+
+SELECT STUDENTS.ROLLNO,SNAME,COURSES.NAME,STDATE
+ FROM STUDENTS INNER JOIN BATCHES ON STUDENTS.BCODE=BATCHES.BCODE 
+INNER JOIN FACULTY ON BATCHES.FACCODE=FACULTY.FACCODE INNER JOIN COURSES ON COURSES.CCODE=BATCHES.CCODE;
+
+9-Display rollno , student name, course name , faculty code and enddate of all batches that were completed.??
+
+SELECT STUDENTS.ROLLNO,SNAME,COURSES.NAME,FACULTY.FACCODE,ENDDATE 
+FROM COURSES INNER JOIN BATCHES ON COURSES.CCODE=BATCHES.CCODE INNER JOIN FACULTY ON FACULTY.FACCODE=BATCHES.FACCODE 
+INNER JOIN STUDENTS ON STUDENTS.BCODE=BATCHES.BCODE; 
+
+10-Display students who have got more number of characters in name than the student with roll number 10??
+
+SELECT  S1.*
+FROM STUDENTS S1  INNER JOIN STUDENTS S2
+ ON ( length(S1.SNAME) > length(S2.SNAME) )
+WHERE S2.ROLLNO = 10 ;
+
+11-Display rollno, student name, email , pay date and amount paid.??
+
+SELECT STUDENTS.ROLLNO,SNAME,EMAIL,PAYMENTS.DP,AMOUNT 
+FROM STUDENTS INNER JOIN PAYMENTS ON STUDENTS.ROLLNO=PAYMENTS.ROLLNO;
+
+12-In previous query include the details of student who haven’t paid anything so far.
+
+SELECT STUDENTS.ROLLNO,SNAME,EMAIL,PAYMENTS.DP,AMOUNT 
+FROM STUDENTS RIGHT JOIN PAYMENTS ON STUDENTS.ROLLNO=PAYMENTS.ROLLNO;
+
+13-Display the details of students who have paid nothing so far.??
+
+SELECT * FROM STUDENTS INNER JOIN PAYMENTS ON STUDENTS.ROLLNO= PAYMENTS.ROLLNO WHERE DP IS  NULL;
+
+
+EXERCISE--2------------------
+
+4-Display ROLLNO of students who have paid for more than twice.??
+
+select rollno,count(*) from payments group by rollno having count(*)>1;
+
+
+
+

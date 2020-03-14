@@ -1,0 +1,269 @@
+declare 
+cursor c1 is select empno,ename,sal from emp;
+eno emp.empno%type;
+nam emp.ename%type;
+bas emp.sal%type;
+c number;
+begin
+select count(*) into c from emp;
+open c1;
+loop 
+	fetch c1 into eno,nam,bas;
+	dbms_output.put_line('employ No '||eno);
+	dbms_output.put_line('employ nam '||nam);
+	dbms_output.put_line('employ sal '||bas);
+exit when c1%rowcount=c;
+end loop;
+close c1;
+end;
+
+
+declare
+cursor c2 is select firstname,lastname,city,state,amount,cheqfacil,accounttype 
+from accounts;
+Fname Accounts.FirstName%type;
+Lname Accounts.LastName%type;
+Cit Accounts.City%type;
+Stat Accounts.State%type;
+Amt Accounts.Amount%type;
+Cf Accounts.CheqFacil%type;
+Actype Accounts.AccountType%type;
+begin
+open c2;
+ loop
+	fetch c2 into fname,lname,cit,stat,amt,cf,actype;
+	exit when c2%notfound;
+	dbms_output.put_line('fname is '|| fname);
+	dbms_output.put_line('lname is '|| lname);
+	dbms_output.put_line('city is '|| cit);
+	dbms_output.put_line('stat is '|| stat);
+	dbms_output.put_line('amt is '|| amt);
+	dbms_output.put_line('acttype is '|| actype);
+end loop;
+close c2;
+end;
+
+
+
+
+--------------  
+declare 
+cursor c2 is select ename from emp;
+na emp.ename%type;
+c number;
+begin
+	select count(*) into c from emp;
+	if not c2%isopen then
+	dbms_output.put_line('plaese open the cursor');
+	end if;
+	fetch c2 into na;
+	dbms_output.put_line('jjj');
+	close c2;
+end;
+------------declaration of cursors--------------------
+declare cursor c2 is select ename from emp;
+na emp.ename%type;
+c number;
+begin
+select count(*) into c from emp;
+if not c2%isopen then open c2;
+end if;
+loop
+	fetch c2 into na;
+	dbms_output.put_line('name is '|| na);
+exit when c2%rowcount=c;
+end loop;
+close c2;
+end;
+	
+-------------------
+declare
+cursor c2 is select firstname,lastname,city,state,amount,cheqfacil,accounttype 
+from accounts;
+Fname Accounts.FirstName%type;
+Lname Accounts.LastName%type;
+Cit Accounts.City%type;
+Stat Accounts.State%type;
+Amt Accounts.Amount%type;
+Cf Accounts.CheqFacil%type;
+Actype Accounts.AccountType%type;
+begin
+if not c2%isopen then open c2;
+end if;
+ loop
+	fetch c2 into fname,lname,cit,stat,amt,cf,actype;
+	exit when c2%notfound;
+	dbms_output.put_line('fname is '|| fname);
+	dbms_output.put_line('lname is '|| lname);
+	dbms_output.put_line('city is '|| cit);
+	dbms_output.put_line('stat is '|| stat);
+	dbms_output.put_line('amt is '|| amt);
+	dbms_output.put_line('acttype is '|| actype);
+end loop;
+close c2;
+end;
+
+---------------------------
+declare
+cursor c5 is 
+select empno,ename ,sal from emp;
+rec c5%rowtype;
+begin
+	open c5;
+	loop
+	fetch c5 into rec;
+	exit when c5%notfound;
+	dbms_output.put_line('id  is '||rec.empno);
+	dbms_output.put_line('name is '|| rec.ename);
+	dbms_output.put_line('city is '|| rec.sal);
+	end loop;
+end;
+
+
+----------------------------
+declare 
+cursor c1 is
+select empno,ename,sal,job from emp;
+rec c1%rowtype;
+begin 
+open c1;
+loop
+fetch c1 into rec;
+if rec.job='MANAGER' then rec.sal:=rec.sal+1000;
+end if;
+	exit when c1%notfound;
+	dbms_output.put_line('id  is '||rec.empno);
+	dbms_output.put_line('name is '|| rec.ename);
+	dbms_output.put_line('city is '|| rec.sal);
+end loop;
+end;
+
+
+
+
+
+
+
+
+
+-----------parameterised cursor----------------------------------
+
+create or replace procedure query(namm emp.job%type)
+as
+begin
+declare 
+cursor cursor_emp(dsg varchar2) is
+select empno,ename,sal,job from emp where job=dsg;
+rec cursor_emp%rowtype;
+begin 
+dbms_output.put_line('cleark records');
+for rec in cursor_emp(namm)
+loop
+	dbms_output.put_line(rec.empno||' '||rec.ename||' '||rec.sal);
+end loop;
+end;
+end;
+
+
+--------
+declare
+cursor course_cursor is
+select c.ccode,count(*) count from course c,batch b,student s where 
+c.ccode=b.bcode and b.bcode=s.bcode
+group by c.ccode;
+v_per number(5,2);
+begin
+for rec in course_cursor
+loop
+	if rec.count>20 then v_per:=1.15;
+	elsif rec.count >10 then v_per:=1.10;
+	else v_per :=0.90;
+	end if;
+ 	dbms_output.put_line('course code'||rec.ccode||rec.count);
+	update course set fee =fee *v_per where ccode=rec.ccode;
+end loop;
+end;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,321 @@
+CREATE OR REPLACE PROCEDURE PRCEMPSHOW(ENO NUMBER,NAM OUT VARCHAR)
+AS BEGIN
+	SELECT ENAME INTO NAM FROM EMP WHERE EMPNO=ENO;
+END;
+
+DECLARE 
+	ENO EMP.EMPNO%TYPE :=&eno;
+	NAM VARCHAR2(30);
+BEGIN
+PRCEMPSHOW(ENO,NAM);
+DBMS_OUTPUT.PUT_LINE(NAM);
+END;
+
+
+
+CREATE OR REPLACE PROCEDURE  PRCSHOWEXEC(ENO EMP.EMPNO%TYPE)
+AS
+BEGIN 
+	DECLARE
+	NAM EMP.ENAME%TYPE;
+	BEGIN 
+		PRCEMPSHOW(ENO,NAM);
+		DBMS_OUTPUT.PUT_LINE(NAM);
+	END;
+END;
+
+--------MULTIPLE OUT-------------------
+CRAETE OR REPLACE PROCEDURE MULOUT
+(
+	ENO EMPLOY.EMPNO%TYPE;
+	NAM EMPLOY.NAME%TYPE;
+	DPT EMPLOY.DEPT%TYPE;
+	DSG EMPLOY.DESIG%TYPE;
+	BAS EMPLOY.BASIC%TYPE;
+)
+AS
+BEGIN
+SELECT 
+
+
+----------BANK PROJECT-------------------------
+
+CREATE OR REPLACE PROCEDURE PRCSEARCHACCOUNTOUT
+( 
+	ACCNO ACCOUNTS.ACCOUNTNO%TYPE,
+	FLAG OUT NUMBER
+)
+AS BEGIN
+ DECLARE
+	CNT NUMBER;
+	BEGIN
+		SELECT COUNT(*) INTO CNT FROM ACCOUNTS WHERE ACCOUNTNO=ACCNO;
+		IF CNT=1 THEN
+		FALG:=0;
+		ELSE
+		FLAG:=1;
+		END  IF;
+	END;
+END;
+------------DEPOSIT--------------------
+CREATE OR REPLACE PROCEDURE PRCAMOUNTDEPOSIT
+(
+	ACCNO ACCOUNTS.ACCOUNTNO%TYPE;
+	DEPAMT ACCOUNTS.AMOUNT%TYPE;
+)
+AS BEGIN 
+DECLARE
+	FLAG NUMBER;
+	BEGIN
+		PRCSEARCHAMOUNTOUT(ACCNO,FLAG);
+		IF FLAG =0 THEN UPDATE ACCOUNT SET AMOUNT=AMOUNT+DEPTAMT WHERE ACCOUNTNO =ACCNO;
+			INSERT INTO TRANS(ACCOUNTNO,TRANAMOUNT,TRANTYPE)
+			VALUES(ACCNO,DEPAMT,'C');
+			DBMS_OUTPUT.PUT_LINE('AMOUNT CREDITED SUCCESSFULLY');
+		ELSE
+			DBMS_OUTPUT.PUT_LINE('ACCOUNT NOT FOUND');
+		END IF;
+	END;
+END;
+
+-----------
+CREATE OR REPLACE PROCEDURE PRCRMPINC
+(
+	ENO ENP.EMPNO%TYPE,
+	INCR IN OUT EMP.SAL%TYPE
+)
+AS 
+BEGIN
+DECLARE 
+	TMP_SAL NUMBER;
+	BEGIN
+	SELECT SAL INTO TMP_SAL FROM EMP WHERE EMPNO=ENO;
+	END;
+	
+
+
+
+
+-----
+DECLARE 
+ENO NUMBER:=7900;
+INCR NUMBER:=600;
+BEGIN
+	PRCEMPINC(ENO,INCR);
+	DBMS_OUTPUT.PUT_LINE('IINCR');
+
+-------in out--------------
+Create or replace procedure prcEmpShow(eno number,
+nam out varchar)
+AS
+BEGIN
+   select ename into nam from Emp where empno=eno;
+END;
+
+declare
+  eno number:=&eno;
+  nam varchar2(30);
+begin
+   prcEmpShow(eno,nam);
+   dbms_output.put_line(nam);
+end;
+
+create or replace procedure prcEmpShowExec(eno number)
+AS
+BEGIN
+declare
+  nam varchar2(30);
+begin
+   prcEmpShow(eno,nam);
+   dbms_output.put_line(nam);
+end;
+END;
+
+exec prcEmpShowExec(7900);
+
+Create or replace procedure prcEmployShow(eno number,
+	nam OUT varchar,
+	dpt OUT varchar,
+        dsg OUT varchar,
+        bas OUT number)
+AS
+BEGIN
+     SELECT
+	   name,dept,desig,basic INTO
+	   nam,dpt,dsg,bas
+	FROM Employ WHERE Empno=eno;
+END;
+
+Create or replace procedure prcEmployShowExec(eno employ.empno%type)
+AS
+BEGIN
+    declare
+       nam employ.name%type;
+       dpt employ.dept%type;
+       dsg employ.desig%type;
+       sal employ.basic%type;
+    begin
+	prcEmployShow(eno,nam,dpt,dsg,sal);
+	dbms_output.put_line(nam);
+	dbms_output.put_line(dpt);
+	dbms_output.put_line(dsg);
+	dbms_output.put_line(sal);
+    Exception
+	WHEN NO_DATA_FOUND THEN
+	dbms_output.put_line('No Record Found...');
+    end;
+END;
+
+create or replace procedure prcSearchAccountOut
+(
+  accno accounts.accountNo%type,
+  flag OUT number
+)
+AS
+BEGIN
+    declare 
+	cnt number;
+    begin
+    select count(*) into cnt from accounts where accountNo=accno;
+    if cnt = 1 then 
+       flag:=0;
+    else
+       flag:=1;
+    end if;
+    end;
+END;   
+
+create or replace procedure prcAmountDeposit
+(
+  AccNo Accounts.AccountNo%type,
+  DepAmt Accounts.Amount%type) 
+AS
+BEGIN 
+declare
+   flag number;
+   begin
+      prcSearchAccountOut(accno,flag);
+      if flag=0 then
+	Update Accounts set Amount=Amount+DepAmt WHERE AccountNo=Accno;
+	Insert into Trans(AccountNo,TranAmount,TranType)
+			values(AccNo,DepAmt,'C');
+	dbms_output.put_line('Amount Credited...');
+      else 
+         dbms_output.put_line('AccountNo Not Found...');
+     end if;
+   end;
+END;	
+
+declare
+   accno number:=41;
+   flag number;
+begin
+   prcSearchAccountOut(accno,flag);
+   dbms_output.put_line(flag);
+end;
+
+create or replace procedure prcEmpInc
+(
+   eno emp.empno%type,
+   incr IN OUT emp.sal%type
+)
+AS
+BEGIN
+    declare
+       tmp_sal number;
+    begin
+      select sal into tmp_sal from Emp where empno=eno;
+      incr:=tmp_sal+incr;
+    end;
+END;
+
+declare
+   eno number:=7900;
+   incr number:=600;
+begin
+    prcEmpInc(eno,incr);
+    dbms_output.put_line(incr);
+end;
+
+create or replace procedure prcEmpIncExec
+(
+  eno emp.empno%type
+)
+AS
+BEGIN
+    Declare
+      incr number:=600;
+    begin
+       prcEmpInc(eno,incr);
+       dbms_output.put_line(incr);
+    end;
+END;
+
+
+create or replace procedure prcAmountDepositNew
+(
+  AccNo Accounts.AccountNo%type,
+  finalAmount IN OUT Accounts.Amount%type,
+  result OUT varchar2) 
+AS
+BEGIN 
+declare
+   flag number;
+   tmp_amount accounts.amount%type;
+   begin
+      prcSearchAccountOut(accno,flag);
+      if flag=0 then
+        SELECT amount into tmp_amount from Accounts 
+	where accountNo=accno;
+	Update Accounts set Amount=Amount+finalAmount WHERE AccountNo=Accno;
+	Insert into Trans(AccountNo,TranAmount,TranType)
+			values(AccNo,finalAmount,'C');
+	result:='Credited';
+        finalAmount:=tmp_amount+finalAmount;
+      else 
+         result:='Not Found';
+     end if;
+   end;
+END;	
+
+Create or Replace procedure prcDepExec
+(
+   accno Accounts.AccountNo%type
+)
+AS
+BEGIN
+    declare 
+	depAmount number:=700;
+        result varchar2(30);
+    begin
+	prcAmountDepositNew(accno,depAmount,result);
+        dbms_output.put_line(accno);
+        dbms_output.put_line(depAmount);
+        dbms_output.put_line(result);
+    end;
+END;
+
+
+exec prcDepExec(3);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

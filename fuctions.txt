@@ -1,0 +1,163 @@
+
+
+----------------------function created----------------------------
+create or replace function calc(n number,m number) return number
+as begin
+declare
+ c number;
+begin
+	c:=n+m;
+	return c;
+	end;
+end;
+
+select calc(12,5) from dual;
+----------------------
+
+create or replace function tax(bas number) return number
+as begin
+	begin
+		return bas*0.03;
+	end;
+end;
+select tax(12000) from dual;
+select sal,tax(sal),sal-tax(sal) "take home" from emp;
+
+
+create or replace function fnmsata(stat number) return varchar2
+as 
+begin
+declare
+mstatus varchar2(30);
+begin
+select case stat
+	when 1 then 'married'
+	when 0 then 'unmarried'
+	end into mstatus from dual;
+return mstatus;
+end;
+end;
+
+select fnmsata(0) from dual;
+select agentid ,maritalstatus,fnmsata(maritalstatus) from agent;
+
+
+
+
+create or replace function getdueamt(prollno number)
+	return number
+is
+v_fee number(5);
+v_amtpaid number(5);
+begin
+--get total amount paid by student
+	select sum(amount) into v_amtpaid from payments where rollno=prollno;
+	select fee into v_fee
+	from course where ccode=(select ccode from batch where bcode in 
+			(select bcode from student where rollno=prollno)
+	);
+	return v_fee-v_amtpaid;
+end;
+
+
+---------------------search account----------------
+create or replace function fnsearchAccount (accno accounts.accountno%type) return number
+as amt accounts.amount%type;
+res number;
+begin
+select amount into  amt from accounts where accountno =accno;
+res:=0;
+ return res;
+exception
+when no_data_found then res:=1;
+return res;
+end;
+
+----------------------------------
+create or replace function fnchkbal(accno accounts.accountno%type,wamt number)
+return number
+as
+amt accounts.amount%type
+-----------------------------
+
+create or replace procedure prcamountwithdraw(accno accounts.accountno%type,withamt accounts.amount%type)
+as 
+begin
+declare
+	amt accounts.amount%type;
+	res1 number;
+	res2 number;
+	begin
+		select fnsearchaccount(accno) into res1 from dual;
+	if res1=0 then
+		select fnchkbal(accno,withamt) into res2 from dual;
+	if res2=0 then 
+		update accounts set amount=amount-withamt where accountno=accno;
+	insert into trans(accountno,tranamount,trantype) values(accnno,withamt,'d');
+	else
+		dbms_output.put_line('******insufficient balance********');
+	end if;
+	else
+	dbms_output.put_line('account no not found');
+	end if;
+	end;
+end;
+
+
+----------------
+
+create or replace function fact(n number) return number
+is 
+i number;
+fac number:=1;
+begin
+for i in 1..n loop
+	fac:=fac*i;
+	end loop;
+return fac;
+end;
+------------recursion will not entertain here--------------
+
+create or replace function fact(n number) return number
+is 
+i number;
+fac number:=1;
+begin
+	if(n>0)
+		fac:=fac*(n);
+		n:=n-1;
+		return fact(n);
+	else n=0
+		return fac;
+	end if;
+end;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
